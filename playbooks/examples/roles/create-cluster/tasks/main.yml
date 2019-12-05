@@ -37,7 +37,7 @@
 - name: generate install-config.yaml
   tags: config
   template:
-    dest: "{{ workdir }}/install-config.yaml"
+    dest: "{{ workdir }}/{{ item }}"
     src: install-config.yaml.j2
   with_items:
   - install-config.yaml
