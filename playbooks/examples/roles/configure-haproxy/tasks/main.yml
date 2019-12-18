@@ -88,9 +88,11 @@
   service:
     name: haproxy.service
     state: restarted
+    enabled: true
 
 - name: Restart firewalld.service
   service:
     name: firewalld.service
     state: restarted
+    enabled: true
 

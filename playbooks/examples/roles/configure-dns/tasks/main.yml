@@ -63,9 +63,11 @@
   service:
     name: named-chroot.service
     state: restarted
+    enabled: true
 
 - name: Restart firewalld.service
   service:
     name: firewalld.service
     state: restarted
+    enabled: true
 

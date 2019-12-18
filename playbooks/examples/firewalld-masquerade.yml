@@ -6,6 +6,7 @@
     service:
       name: firewalld.service
       state: restarted
+      enabled: true
     listen: "restart firewalld"
   tasks:
   - name: Enable masquerade in firewalld public zone
