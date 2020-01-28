@@ -40,6 +40,17 @@
     dest: "{{ bootfile_dest }}/{{ item }}"
   with_items: '{{ rhcos_download_files }}'
 
+- name: make ignition config directory
+  file:
+    path: /var/www/html/ignition
+    state: directory
+
+- name: download disk images when cache_rhcos_images == true
+  get_url:
+    url: "{{ rhcos_download_url }}/{{ rhcos_disk_image }}"
+    dest: "/var/www/html/ignition/{{ rhcos_disk_image }}"
+  when: cache_rhcos_images
+
 - block:
   - name: install git
     dnf:

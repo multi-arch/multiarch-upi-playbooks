@@ -8,6 +8,7 @@ cluster_name: test
 # RHCOS kernel, initramfs, and disk images
 rhcos_version: "42s390x.81.20191126.0"
 rhcos_download_url: "https://mirror.openshift.com/pub/openshift-v4/s390x/dependencies/rhcos/pre-release/4.2.0-0.nightly-s390x-2019-11-26-152324/"
+cache_rhcos_images: true
 
 # The download URL of the openshift-install binary
 openshift_install_binary_url: "https://mirror.openshift.com/pub/openshift-v4/s390x/clients/ocp-dev-preview/latest/openshift-install-linux-4.2.0-0.nightly-s390x-2019-11-26-194321.tar.gz"
