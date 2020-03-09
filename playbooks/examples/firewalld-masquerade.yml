@@ -1,0 +1,18 @@
+---
+- name: configure firewalld masquerade on bastion
+  hosts: s390x-bastion-workstation
+  handlers:
+  - name: Restart firewalld.service
+    service:
+      name: firewalld.service
+      state: restarted
+    listen: "restart firewalld"
+  tasks:
+  - name: Enable masquerade in firewalld public zone
+    firewalld:
+      masquerade: yes
+      permanent: true
+      state: enabled
+      zone: public
+    notify:
+    - restart firewalld

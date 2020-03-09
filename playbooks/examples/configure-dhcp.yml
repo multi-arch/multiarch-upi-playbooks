@@ -1,0 +1,5 @@
+---
+- name: configure dhcp on dhcp-server
+  hosts: s390x-bastion-workstation
+  roles:
+  - configure-dhcp

@@ -1,0 +1,20 @@
+---
+# handlers file for configure-dhcp
+- name: Restart dhcpd.service
+  service:
+    name: dhcpd.service
+    state: restarted
+  listen: "restart dhcp"
+
+- name: Restart NetworkManager.service
+  service:
+    name: NetworkManager.service
+    state: restarted
+  listen: "restart network manager"
+
+- name: Restart firewalld.service
+  service:
+    name: firewalld.service
+    state: restarted
+  listen: "restart firewalld"
+

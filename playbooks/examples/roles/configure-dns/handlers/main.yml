@@ -1,0 +1,13 @@
+---
+# handlers file for configure-dns
+- name: Restart named-chroot.service
+  service:
+    name: named-chroot.service
+    state: restarted
+  listen: "restart dns"
+
+- name: Restart firewalld.service
+  service:
+    name: firewalld.service
+    state: restarted
+  listen: "restart firewalld"

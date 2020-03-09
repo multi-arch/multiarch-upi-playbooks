@@ -1,0 +1,5 @@
+---
+- name: configure minimal dns server
+  hosts: s390x-bastion-workstation
+  roles:
+  - configure-dns

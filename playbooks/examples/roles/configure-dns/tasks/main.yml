@@ -1,0 +1,71 @@
+---
+# tasks file for configure-dns
+
+- name: install bind-chroot for dns 
+  dnf:
+    name: bind-chroot
+    state: latest
+    
+- name: create /var/named directory
+  file:
+    path: /var/named
+    state: directory
+
+- name: create dns subnet definition
+  template:
+    src: var/named/cluster_domain_name.zone.j2
+    dest: /var/named/{{ cluster_domain_name }}.zone
+  notify:
+   - restart dns
+
+- name: unmanage resolve.conf in NetworkManager
+  lineinfile:
+    line: dns=none
+    dest: /etc/NetworkManager/NetworkManager.conf
+    insertafter: "\\[main\\].*"
+    regexp: "^dns=.*"
+
+- name: use local dns in resolv.conf
+  blockinfile:
+    dest: /etc/resolv.conf
+    insertbefore: BOF
+    block: |
+      search {{ cluster_domain_name }}
+      nameserver {{ bastion_private_ip_address }} 
+
+- name: create dns subnet zone
+  template:
+    src: var/named/subnet.in-addr.arpa.zone.j2
+    dest: /var/named/{{ subnet_in_addr_name }}.in-addr.arpa.zone
+  notify:
+   - restart dns
+ 
+- name: create /etc/named.conf
+  template:
+    src: etc/named.conf.j2
+    dest: /etc/named.conf
+  notify:
+   - restart dns
+
+- name: add dns to firewall
+  firewalld:
+    permanent: true
+    service: dns
+    state: enabled
+    zone: "{{ item }}"
+  with_items:
+    - internal
+    - public
+  notify:
+  - restart firewalld
+
+- name: Restart named-chroot.service
+  service:
+    name: named-chroot.service
+    state: restarted
+
+- name: Restart firewalld.service
+  service:
+    name: firewalld.service
+    state: restarted
+

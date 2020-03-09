@@ -1,0 +1,6 @@
+---
+grub_filename: "{{ grub_filename_by_arch[ansible_architecture] }}"
+grub_filename_by_arch:
+  x86_64: boot/grub2/i386-pc/core.0
+  ppc64le: boot/grub2/powerpc-ieee1275/core.elf
+  s390x: pxelinux.0

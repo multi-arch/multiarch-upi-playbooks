@@ -1,0 +1,60 @@
+# {{ ansible_managed }}
+
+{% set bootstrap  = cluster_nodes['bootstrap'] %}
+{% set masters    = cluster_nodes['masters'] %}
+{% set workers      = cluster_nodes['workers'] %}
+{% set subnet_base = subnet_cidr.split('/')[0] %}
+
+#
+# DHCP Server Configuration file.
+#   see /usr/share/doc/dhcp-server/dhcpd.conf.example
+#   see dhcpd.conf(5) man page
+default-lease-time 900;
+max-lease-time 7200;
+
+subnet {{ subnet_base }} netmask {{ subnet_netmask }} {
+        option routers {{ bastion_private_ip_address }};
+        option subnet-mask {{ subnet_netmask }};
+        option domain-search "{{ cluster_domain_name }}";
+        option domain-name-servers {{ bastion_private_ip_address }};
+        next-server {{ dhcp_server_ip_address }};
+{% if pxe_mode != 'pxelinux' %}
+        filename "{{ grub_filename }}";
+{% endif %}
+}
+
+
+host bootstrap-0 {
+        hardware ethernet {{ bootstrap['bootstrap-0'].mac }};
+        fixed-address {{ bootstrap['bootstrap-0'].ip }};
+        option host-name "bootstrap-0.{{ cluster_domain_name }}";
+{% if pxe_mode == 'pxelinux' %}
+        filename "bootstrap-0-pxelinux.0";
+{% endif %}
+}
+
+{% for item in masters.keys() %}
+host {{ item }} {
+        hardware ethernet {{ masters[item].mac }};
+        fixed-address {{ masters[item].ip }};
+        option host-name "{{ item }}.{{ cluster_domain_name }}";
+{% if pxe_mode == 'pxelinux' %}
+        filename "{{ item }}-pxelinux.0";
+{% endif %}
+}
+
+{% endfor %}
+{% if workers is defined %}
+{% for item in workers.keys() %}
+host {{ item }} {
+        hardware ethernet {{ workers[item].mac }};
+        fixed-address {{ workers[item].ip }};
+        option host-name "{{ item }}.{{ cluster_domain_name }}";
+{% if pxe_mode == 'pxelinux' %}
+        filename "{{ item }}-pxelinux.0";
+{% endif %}
+}
+
+{% endfor %}
+{% endif %}
+

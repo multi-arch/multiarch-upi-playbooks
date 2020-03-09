@@ -1,0 +1,29 @@
+---
+# tasks file for configure-dhcp
+
+- name: install dhcp-server
+  dnf:
+    name: dhcp-server
+    state: latest
+
+- name: create /etc/dhcp
+  file:
+    path: /etc/dhcp
+    state: directory
+
+- name: create /etc/dhcp/dhcpd.conf
+  template:
+    src: etc/dhcp/dhcpd.conf.j2
+    dest: /etc/dhcp/dhcpd.conf
+  notify:
+  - restart dhcp
+  
+- name: Add dhcp to firewall
+  firewalld:
+    service: dhcp
+    permanent: true
+    state: enabled
+    zone: public
+  notify:
+  - restart firewalld
+
