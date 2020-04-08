@@ -7,12 +7,20 @@
   when: install_mode == 'zkvm'
 
 - name: generate parmfile
-  when: pxe_mode == 'pxelinux'
+  when: pxe_mode == 'pxelinux' and not cache_rhcos_images
   tags: pxelinux-cfg
   copy:
     dest: "{{ bootfile_dest }}/{{item}}.parm"
     content: |
       rd.neednet=1 console=ttysclp0 coreos.inst=yes coreos.inst.install_dev={{ cluster_nodes[coreos_role][item].disk }} coreos.inst.image_url={{ rhcos_download_url }}/{{ rhcos_disk_image }} coreos.inst.ignition_url=http://bastion.{{ cluster_domain_name }}:8080/ignition/{{ cluster_nodes[coreos_role][item].ign_profile }} {{ coreos_kargs_net[install_mode] }} {{ coreos_kargs_extra[install_mode] }}
+
+- name: generate parmfile
+  when: pxe_mode == 'pxelinux' and cache_rhcos_images
+  tags: pxelinux-cfg
+  copy:
+    dest: "{{ bootfile_dest }}/{{ item }}.parm"
+    content: |
+      rd.neednet=1 console=ttysclp0 coreos.inst=yes coreos.inst.install_dev={{ cluster_nodes[coreos_role][item].disk }} coreos.inst.image_url=http://bastion.{{ cluster_domain_name }}:8080/ignition/{{ rhcos_disk_image }} coreos.inst.ignition_url=http://bastion.{{ cluster_domain_name }}:8080/ignition/{{ cluster_nodes[coreos_role][item].ign_profile }} {{ coreos_kargs_net[install_mode] }} {{ coreos_kargs_extra[install_mode] }}
 
 - name: make pxelinux.0 file
   tags: pxelinux0
@@ -20,4 +28,3 @@
     chdir: "{{ bootfile_dest }}"
   shell: bash /root/s390-tools/netboot/mk-s390image rhcos-{{ rhcos_version }}-installer-kernel -r rhcos-{{ rhcos_version }}-installer-initramfs.img -p {{item}}-pxelinux.parm {{item}}-pxelinux.0
   when: install_mode == 'zkvm'
-

@@ -6,11 +6,13 @@ cluster_name: test
 
 # The URL of of the archive containing the
 # RHCOS kernel, initramfs, and disk images
-rhcos_version: "42s390x.81.20191126.0"
-rhcos_download_url: "https://mirror.openshift.com/pub/openshift-v4/s390x/dependencies/rhcos/pre-release/4.2.0-0.nightly-s390x-2019-11-26-152324/"
+rhcos_version: "4.2.18-s390x"
+rhcos_download_url: "https://mirror.openshift.com/pub/openshift-v4/s390x/dependencies/rhcos/4.2/4.2.18/"
+cache_rhcos_images: true
 
 # The download URL of the openshift-install binary
-openshift_install_binary_url: "https://mirror.openshift.com/pub/openshift-v4/s390x/clients/ocp-dev-preview/latest/openshift-install-linux-4.2.0-0.nightly-s390x-2019-11-26-194321.tar.gz"
+openshift_install_binary_url: "https://mirror.openshift.com/pub/openshift-v4/s390x/clients/ocp/latest/openshift-install-linux-4.2.20.tar.gz"
+
 
 # The public DNS server to use.  This should be
 # changed to a DNS server on your intranet.
@@ -28,7 +30,8 @@ subnet_in_addr_name: "{{ subnet_cidr.split('.')[:3] | reverse | join('.') }}"
 # cluster nodes can see.
 bastion_private_ip_address: 192.168.0.1
 # This is the IP address of the bastion
-# when the bastion is configures as a dhcp
+# when the bastion is configured as a dhcp
+
 # server.  Otherwise it is ignored.
 dhcp_server_ip_address: 192.168.0.1
 
